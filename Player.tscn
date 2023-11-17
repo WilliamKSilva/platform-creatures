@@ -18,3 +18,8 @@ shape = SubResource("CircleShape2D_qyeyj")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_rwpjs")
+
+[node name="JumpTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="JumpTimer" to="." method="OnJumpTimeout"]
