@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cbyqglwsqw57f"]
 
 [ext_resource type="Texture2D" uid="uid://d3skvj71m6o63" path="res://art/0001.png" id="1_lccq8"]
-[ext_resource type="PackedScene" uid="uid://duy4xv1crau2" path="res://characters/George.tscn" id="2_ckne8"]
+[ext_resource type="PackedScene" uid="uid://duy4xv1crau2" path="res://characters/Grawg.tscn" id="2_ckne8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_82bed"]
 size = Vector2(1912.5, 118)
@@ -45,5 +45,5 @@ texture = ExtResource("1_lccq8")
 position = Vector2(-4.5, 481)
 shape = SubResource("RectangleShape2D_eq7ln")
 
-[node name="George" parent="." instance=ExtResource("2_ckne8")]
-position = Vector2(1505, 928)
+[node name="Grawg" parent="." instance=ExtResource("2_ckne8")]
+position = Vector2(1522, 764)

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://duy4xv1crau2"]
+
+[ext_resource type="Texture2D" uid="uid://mwd0j1apmme1" path="res://art/grawg0001.png" id="1_i867n"]
+
+[node name="Grawg" type="Node2D"]
+scale = Vector2(1.345, 1.345)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_i867n")
