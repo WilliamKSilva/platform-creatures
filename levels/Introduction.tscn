@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://cbyqglwsqw57f"]
+
+[ext_resource type="Texture2D" uid="uid://d3skvj71m6o63" path="res://art/0001.png" id="1_lccq8"]
+[ext_resource type="PackedScene" uid="uid://duy4xv1crau2" path="res://characters/George.tscn" id="2_ckne8"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_82bed"]
+size = Vector2(1912.5, 118)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eq7ln"]
+size = Vector2(11, 950)
+
+[node name="Node" type="Node"]
+
+[node name="Ground" type="StaticBody2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="Ground"]
+position = Vector2(6, 962)
+polygon = PackedVector2Array(0, 0, 1917, 3, 1917, 113, 5, 116)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(960.75, 1022)
+shape = SubResource("RectangleShape2D_82bed")
+
+[node name="Roof" type="StaticBody2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="Roof"]
+position = Vector2(-263, -127)
+polygon = PackedVector2Array(2175, 127, 1846, 249, 503, 249, 263, 130)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Roof"]
+polygon = PackedVector2Array(2, 6, 234, 122, 1589, 122, 1903, 0)
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(1440, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(962, 416)
+texture = ExtResource("1_lccq8")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-4.5, 481)
+shape = SubResource("RectangleShape2D_eq7ln")
+
+[node name="George" parent="." instance=ExtResource("2_ckne8")]
+position = Vector2(1505, 928)

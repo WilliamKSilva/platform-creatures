@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://b62wfvb17yyuj"]
 
 [ext_resource type="PackedScene" uid="uid://ck34igcxtx80q" path="res://Player.tscn" id="1_ls884"]
-[ext_resource type="PackedScene" uid="uid://cbyqglwsqw57f" path="res://Level.tscn" id="2_21ofw"]
+[ext_resource type="PackedScene" uid="uid://cbyqglwsqw57f" path="res://levels/Introduction.tscn" id="2_a1lh7"]
 
 [node name="Node" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("1_ls884")]
 position = Vector2(35, 24)
 
-[node name="TileMap" parent="." instance=ExtResource("2_21ofw")]
+[node name="Node" parent="." instance=ExtResource("2_a1lh7")]

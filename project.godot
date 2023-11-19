@@ -19,6 +19,9 @@ config/icon="res://icon.svg"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/mode=3
+window/stretch/mode="viewport"
+window/stretch/aspect="keep_height"
 
 [dotnet]
 
@@ -46,3 +49,7 @@ jump={
 
 2d_physics/layer_1="world"
 2d_physics/layer_2="player"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
