@@ -1,9 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://duy4xv1crau2"]
+[gd_scene load_steps=3 format=3 uid="uid://kr3qefdke70f"]
 
-[ext_resource type="Texture2D" uid="uid://mwd0j1apmme1" path="res://art/grawg0001.png" id="1_i867n"]
+[ext_resource type="PackedScene" uid="uid://duy4xv1crau2" path="res://characters/NPC.tscn" id="1_gdyyi"]
+[ext_resource type="Texture2D" uid="uid://mwd0j1apmme1" path="res://art/grawg0001.png" id="2_b85f0"]
 
 [node name="Grawg" type="Node2D"]
-scale = Vector2(1.345, 1.345)
+
+[node name="NPC" parent="." instance=ExtResource("1_gdyyi")]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_i867n")
+texture = ExtResource("2_b85f0")

@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://duy4xv1crau2"]
+
+[ext_resource type="Texture2D" uid="uid://qltryy5oyq7h" path="res://art/dialog0001.png" id="2_hbycj"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x4bmw"]
+radius = 134.974
+
+[node name="NPC" type="CharacterBody2D"]
+scale = Vector2(1.345, 1.345)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-8.17844, 47.5836)
+shape = SubResource("CircleShape2D_x4bmw")
+
+[node name="Dialog" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Sprite2D" type="Sprite2D" parent="Dialog"]
+position = Vector2(300, -200)
+scale = Vector2(2.005, 2)
+texture = ExtResource("2_hbycj")
+
+[node name="Text" type="RichTextLabel" parent="Dialog"]
+layout_mode = 0
+offset_left = 62.0
+offset_top = -301.0
+offset_right = 429.0
+offset_bottom = -204.0
+scroll_active = false

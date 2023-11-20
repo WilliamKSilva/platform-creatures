@@ -4,12 +4,17 @@ using System;
 public partial class Player : CharacterBody2D
 {
 	[Export]
-	public int Speed { get; set; } = 200;
+	public int Speed { get; set; } = 300;
 
-	public int JumpSpeed = -400;
-	public int Gravity = 200;
+	public int JumpSpeed = -700;
+	public int Gravity = 300;
 
-	public override void _PhysicsProcess(double delta)
+    public override void _Ready()
+    {
+			GetNode<AnimatedSprite2D>("Animation").Play("player_stand");
+    }
+
+    public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Vector2.Zero;
 
@@ -23,16 +28,7 @@ public partial class Player : CharacterBody2D
 			velocity.X -= 1;
 		}
 
-		Timer timer = GetNode<Timer>("JumpTimer");
-		GD.Print(timer.TimeLeft);
-
-		if (Input.IsActionJustPressed("jump") && timer.TimeLeft == 0)
-		{
-			GD.Print("Pressed");
-			timer.Start();
-		}
-
-		if (Input.IsActionPressed("jump") && timer.TimeLeft > 0)
+		if (Input.IsActionPressed("jump"))
 		{
 			velocity.Y = JumpSpeed;
 		}
