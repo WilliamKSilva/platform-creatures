@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://duy4xv1crau2"]
+[gd_scene load_steps=4 format=3 uid="uid://duy4xv1crau2"]
 
+[ext_resource type="Script" path="res://characters/NPC.cs" id="1_6nrjq"]
 [ext_resource type="Texture2D" uid="uid://qltryy5oyq7h" path="res://art/dialog0001.png" id="2_hbycj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x4bmw"]
@@ -7,6 +8,9 @@ radius = 134.974
 
 [node name="NPC" type="CharacterBody2D"]
 scale = Vector2(1.345, 1.345)
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_6nrjq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-8.17844, 47.5836)
