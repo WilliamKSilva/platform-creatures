@@ -4,10 +4,9 @@
 [ext_resource type="Script" path="res://Main.cs" id="1_um05w"]
 [ext_resource type="PackedScene" uid="uid://cbyqglwsqw57f" path="res://levels/Introduction.tscn" id="2_a1lh7"]
 
-[node name="Node" type="Node"]
+[node name="Main" type="Node"]
 script = ExtResource("1_um05w")
+LevelScene = ExtResource("2_a1lh7")
 
-[node name="Player" parent="." instance=ExtResource("1_ls884")]
-position = Vector2(35, 24)
-
-[node name="Introduction" parent="." instance=ExtResource("2_a1lh7")]
+[node name="Character" parent="." instance=ExtResource("1_ls884")]
+position = Vector2(112, 224)

@@ -9,7 +9,7 @@ size = Vector2(1912.5, 118)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eq7ln"]
 size = Vector2(11, 950)
 
-[node name="Node" type="Node"]
+[node name="Introduction" type="Node"]
 
 [node name="Ground" type="StaticBody2D" parent="."]
 
@@ -46,4 +46,6 @@ position = Vector2(-4.5, 481)
 shape = SubResource("RectangleShape2D_eq7ln")
 
 [node name="Grawg" parent="." instance=ExtResource("2_3d540")]
-position = Vector2(1454, 806)
+
+[node name="Position" type="Marker2D" parent="Grawg"]
+position = Vector2(1502, 821)
