@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtrtsrnqcv55v"]
+
+[ext_resource type="Script" path="res://objects/Roof.cs" id="1_da04c"]
+
+[node name="Roof" type="StaticBody2D"]
+script = ExtResource("1_da04c")
+PolygonXWidth = 3000
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-72, -256, -48, -112, 16, 32, 64, 48, 96, 80, 176, 72, 240, 80, 288, 64, 384, 64, 448, 64, 480, 88, 560, 64, 648, 64, 752, 56, 824, 72, 880, 80, 936, 80, 960, 64, 1056, 72, 1192, 56, 1344, 80, 1488, 80, 1608, 64, 1736, 80, 1792, 104, 1840, 96, 1904, 72, 1968, -80, 1992, -256)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
