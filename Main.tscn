@@ -10,3 +10,5 @@ LevelScene = ExtResource("2_a1lh7")
 
 [node name="Player" parent="." instance=ExtResource("1_ls884")]
 position = Vector2(112, 224)
+
+[connection signal="OnDialogSkip" from="Player" to="." method="OnPlayerDialogSkip"]

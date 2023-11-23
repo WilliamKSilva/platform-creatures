@@ -12,6 +12,8 @@ public partial class Main : Node
 	public Dialog[] LevelDialogs = Array.Empty<Dialog>();
 	public int DialogOrder = 0;
 
+	public bool FirstDialogShowed = false;
+
 	public string[] NPCsNames = new string[] { "Grawg" };
 	public Node2D[] NPCsOnScene = Array.Empty<Node2D>();
 
@@ -35,8 +37,9 @@ public partial class Main : Node
 	public override void _Process(double delta)
 	{
 		Player player = GetNode<Player>("Player");
+		// Start the dialog interaction from the first dialog 
 
-		if (player.InDialog)
+		if (player.InDialog && !FirstDialogShowed)
 		{
 			ShowDialog();
 		}
@@ -48,8 +51,6 @@ public partial class Main : Node
 		Level = sceneInstantiaded;
 		AddChild(sceneInstantiaded);
 	}
-
-
 
 	public void GetNPCsOnScene()
 	{
@@ -100,6 +101,11 @@ public partial class Main : Node
 		{
 			Dialog dialog = LevelDialogs[i];
 
+			if (dialog == null)
+			{
+				return null;
+			}
+
 			if (dialog.order == DialogOrder)
 			{
 				return dialog;
@@ -112,6 +118,11 @@ public partial class Main : Node
 	public void ShowDialog()
 	{
 		Dialog currentDialog = GetCurrentDialog();
+
+		if (currentDialog == null)
+		{
+			return;
+		}
 
 		if (currentDialog.character == "Player")
 		{
@@ -126,8 +137,15 @@ public partial class Main : Node
 
 		Dialog dialog = LevelDialogs[DialogOrder];
 
+		if (dialog == null)
+		{
+			return;
+		}
+
 		RichTextLabel dialogNode = dialogBox.GetNode<RichTextLabel>("Text");
 		dialogNode.Text = dialog.text;
+
+		FirstDialogShowed = true;
 	}
 
 	// TODO: Maybe make an class for this type of methods
@@ -143,6 +161,12 @@ public partial class Main : Node
 		}
 
 		return null;
+	}
+
+	public void OnPlayerDialogSkip()
+	{
+		DialogOrder++;
+		ShowDialog();
 	}
 
 	public void PlayerCollision(Node2D npcNode2D)

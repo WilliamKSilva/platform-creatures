@@ -7,4 +7,6 @@ public partial class Dialog
   public int order { get; set; }
 
   public string character { get; set; }
+
+  public string displayed { get; set; }
 }

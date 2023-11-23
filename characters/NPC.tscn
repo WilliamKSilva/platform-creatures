@@ -24,14 +24,14 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Sprite2D" type="Sprite2D" parent="Dialog"]
-position = Vector2(300, -200)
+position = Vector2(300, -150)
 scale = Vector2(2.005, 2)
 texture = ExtResource("2_hbycj")
 
 [node name="Text" type="RichTextLabel" parent="Dialog"]
 layout_mode = 0
-offset_left = 62.0
-offset_top = -301.0
-offset_right = 429.0
-offset_bottom = -204.0
+offset_left = 57.2491
+offset_top = -244.61
+offset_right = 424.249
+offset_bottom = -151.61
 scroll_active = false
