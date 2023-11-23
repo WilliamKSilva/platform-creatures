@@ -9,6 +9,8 @@ public partial class Player : CharacterBody2D
 	public int JumpSpeed = -700;
 	public int Gravity = 300;
 
+	public bool InDialog = false;
+
     public override void _Ready()
     {
 			GetNode<AnimatedSprite2D>("Animation").Play("player_stand");

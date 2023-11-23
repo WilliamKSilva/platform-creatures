@@ -8,5 +8,5 @@
 script = ExtResource("1_um05w")
 LevelScene = ExtResource("2_a1lh7")
 
-[node name="Character" parent="." instance=ExtResource("1_ls884")]
+[node name="Player" parent="." instance=ExtResource("1_ls884")]
 position = Vector2(112, 224)
