@@ -4,7 +4,6 @@
 
 [node name="Ground" type="StaticBody2D"]
 script = ExtResource("1_j0bcf")
-PolygonXWidth = 3000
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-8, 1072, 960, 1072, 1920, 1072, 1920, 1142.94, 1920, 1464, -8, 1464)
