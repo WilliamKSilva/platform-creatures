@@ -15,7 +15,7 @@ public partial class Main : Node
 	public bool FirstDialogShowed = false;
 
 	public string[] NPCsNames = new string[] { "Grawg" };
-	public Node2D[] NPCsOnScene = Array.Empty<Node2D>();
+	public Node2D[] CharactersOnScene = Array.Empty<Node2D>();
 
 	public override void _Ready()
 	{
@@ -38,7 +38,6 @@ public partial class Main : Node
 	{
 		Player player = GetNode<Player>("Player");
 		// Start the dialog interaction from the first dialog 
-
 		if (player.InDialog && !FirstDialogShowed)
 		{
 			ShowDialog();
@@ -61,18 +60,29 @@ public partial class Main : Node
 
 			if (npcNode2D != null)
 			{
-				NPCsOnScene = NPCsOnScene.Append(npcNode2D).ToArray();
+				CharactersOnScene = CharactersOnScene.Append(npcNode2D).ToArray();
 			}
 		}
+
+		Player player = GetNode<Player>("Player");
+
+		CharactersOnScene = CharactersOnScene.Append(player).ToArray();
 	}
 
 	public void SetNPCsOnScene()
 	{
-		for (var i = 0; i < NPCsOnScene.Length; i++)
+		for (var i = 0; i < CharactersOnScene.Length; i++)
 		{
-			Node2D npcNode2D = NPCsOnScene[i];
-			SetNPCPosition(npcNode2D);
-			LoadNPCDialogs(npcNode2D);
+			Node character = CharactersOnScene[i];
+
+			if (character.Name == "Player")
+			{
+				LoadNPCDialogs(character as Node2D);
+				continue;
+			}
+
+			SetNPCPosition(character as Node2D);
+			LoadNPCDialogs(character as Node2D);
 		}
 	}
 
@@ -115,8 +125,30 @@ public partial class Main : Node
 		return null;
 	}
 
+	public Dialog GetLastDialog()
+	{
+		Dialog lastDialog = LevelDialogs[0];
+
+		for (int i = 0; i < LevelDialogs.Length; i++)
+		{
+			Dialog currentDialog = LevelDialogs[i];
+
+			if (currentDialog.order > lastDialog.order)
+			{
+				lastDialog = currentDialog;
+				continue;
+			}
+		}
+
+		return lastDialog;
+	}
+
 	public void ShowDialog()
 	{
+		// if (DialogsEndend())
+		// {
+		// 	return;
+		// }
 		Dialog currentDialog = GetCurrentDialog();
 
 		if (currentDialog == null)
@@ -126,7 +158,27 @@ public partial class Main : Node
 
 		if (currentDialog.character == "Player")
 		{
-			return;	
+			CharacterBody2D player = GetNode<CharacterBody2D>("Player");
+			Control playerDialogBox = player.GetNode<Control>("Dialog");
+			playerDialogBox.Visible = true;
+			AnimatedSprite2D animatedSprite2D = playerDialogBox.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+
+			switch (currentDialog.text)
+			{
+				case PlayerDialogTypes.QUESTION:
+					animatedSprite2D.Play("question");
+					break;
+				case PlayerDialogTypes.LAUGH:
+					animatedSprite2D.Play("laugh");
+					break;
+				case PlayerDialogTypes.OK:
+					animatedSprite2D.Play("ok");
+					break;
+				default:
+					break;
+			}
+
+			return;
 		}
 
 		Node2D npcNode2D = GetLevelNPCByName(currentDialog.character);
@@ -135,7 +187,7 @@ public partial class Main : Node
 		Control dialogBox = npc.GetNode<Control>("Dialog");
 		dialogBox.Visible = true;
 
-		Dialog dialog = LevelDialogs[DialogOrder];
+		Dialog dialog = GetCurrentDialog();
 
 		if (dialog == null)
 		{
@@ -148,11 +200,19 @@ public partial class Main : Node
 		FirstDialogShowed = true;
 	}
 
+	public bool DialogsEnded()
+	{
+		bool lastDialogDisplayed = GetLastDialog().order == DialogOrder;
+
+		return lastDialogDisplayed;
+	}
+
 	// TODO: Maybe make an class for this type of methods
-	public Node2D GetLevelNPCByName(string npcName) {
-		for (int i = 0; i < NPCsOnScene.Length; i++)
+	public Node2D GetLevelNPCByName(string npcName)
+	{
+		for (int i = 0; i < CharactersOnScene.Length; i++)
 		{
-			Node2D npcNode2D = NPCsOnScene[i];
+			Node2D npcNode2D = CharactersOnScene[i];
 
 			if (npcNode2D.Name == npcName)
 			{
@@ -165,8 +225,58 @@ public partial class Main : Node
 
 	public void OnPlayerDialogSkip()
 	{
-		DialogOrder++;
-		ShowDialog();
+		Player player = GetNode<Player>("Player");
+
+		if (DialogsEnded() && player.InDialog)
+		{
+			Dialog lastDialogDisplayed = GetCurrentDialog();
+
+			if (lastDialogDisplayed.character == "Player")
+			{
+				Control dialogBox = player.GetNode<Control>("Dialog");
+				dialogBox.Visible = false;
+			}
+			else
+			{
+				Node2D npcNode2D = GetLevelNPCByName(lastDialogDisplayed.character);
+				CharacterBody2D npc = npcNode2D.GetNode<CharacterBody2D>("NPC");
+				Control dialogBox = npc.GetNode<Control>("Dialog");
+				dialogBox.Visible = false;
+			}
+
+			player.InDialog = false;
+
+			// After the Dialog ends turn the NPC collision of so the player can continue
+			Dialog lastDialog = GetLastDialog();
+			// TODO: make an function to Get the respective NPC by name
+			Node2D node2D = Level.GetNode<Node2D>(lastDialog.character);
+			NPC npcNode = node2D.GetNode<NPC>("NPC");
+
+			CollisionShape2D collisionShape = npcNode.GetNode<CollisionShape2D>("CollisionShape2D");
+			collisionShape.Disabled = true;
+
+			return;
+		}
+
+		if (player.InDialog)
+		{
+			Dialog lastDialogDisplayed = GetCurrentDialog();
+			if (lastDialogDisplayed.character == "Player")
+			{
+				Control dialogBox = player.GetNode<Control>("Dialog");
+				dialogBox.Visible = false;
+			}
+			else
+			{
+				Node2D npcNode2D = GetLevelNPCByName(lastDialogDisplayed.character);
+				CharacterBody2D npc = npcNode2D.GetNode<CharacterBody2D>("NPC");
+				Control dialogBox = npc.GetNode<Control>("Dialog");
+				dialogBox.Visible = false;
+			}
+
+			DialogOrder++;
+			ShowDialog();
+		}
 	}
 
 	public void PlayerCollision(Node2D npcNode2D)

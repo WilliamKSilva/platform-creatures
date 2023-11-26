@@ -4,10 +4,11 @@ using System;
 public partial class Player : CharacterBody2D
 {
 	[Export]
-	public int Speed { get; set; } = 300;
+	public int Speed { get; set; } = 600;
 
-	public int JumpSpeed = -700;
-	public int Gravity = 300;
+	public int JumpSpeed = -1000;
+
+	public int Gravity = 500;
 
 	public bool InDialog = false;
 
@@ -30,6 +31,11 @@ public partial class Player : CharacterBody2D
 	public override void _PhysicsProcess(double delta)
 	{
 		Vector2 velocity = Vector2.Zero;
+
+		if (InDialog)
+		{
+			return;
+		}
 
 		if (Input.IsActionPressed("move_right"))
 		{
