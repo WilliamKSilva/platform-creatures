@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://crmf0h1x77l0m"]
+
+[ext_resource type="PackedScene" uid="uid://oxkvghtfojun" path="res://objects/Ground.tscn" id="1_frbfc"]
+[ext_resource type="PackedScene" uid="uid://dtrtsrnqcv55v" path="res://objects/Roof.tscn" id="2_0hcwy"]
+
+[node name="level1" type="Node"]
+
+[node name="Ground" parent="." instance=ExtResource("1_frbfc")]
+
+[node name="Roof" parent="." instance=ExtResource("2_0hcwy")]

@@ -7,6 +7,8 @@
 script = ExtResource("1_um05w")
 
 [node name="Player" parent="." instance=ExtResource("1_ls884")]
+
+[node name="PlayerPosition" type="Marker2D" parent="."]
 position = Vector2(108, 108)
 
 [connection signal="OnDialogSkip" from="Player" to="." method="OnPlayerDialogSkip"]

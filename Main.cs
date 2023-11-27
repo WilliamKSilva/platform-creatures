@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public partial class Main : Node
@@ -15,7 +16,7 @@ public partial class Main : Node
 
 	public bool FirstDialogShowed = false;
 
-	public string[] NPCsNames = new string[] { "Grawg" };
+	public List<string> NPCsNames = new List<string>();
 	public Node2D[] CharactersOnScene = Array.Empty<Node2D>();
 
 	public override void _Ready()
@@ -30,7 +31,10 @@ public partial class Main : Node
 		InstantiateLevel(LevelScene);
 
 		// Get all NPCs on scene
+		NPCsNames.Add("Grawg");
 		GetNPCsOnScene();
+
+		SetPlayerInitialPosition();
 
 		// Set NPCs on scene position and dialogs
 		SetNPCsOnScene();
@@ -39,9 +43,9 @@ public partial class Main : Node
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		Player player = GetNode<Player>("Player");
 		// Start the dialog interaction from the first dialog 
-		if (player.InDialog && !FirstDialogShowed)
+		bool PlayerExists = Player != null;
+		if (PlayerExists && Player.InDialog && !FirstDialogShowed)
 		{
 			ShowDialog();
 		}
@@ -56,7 +60,7 @@ public partial class Main : Node
 
 	public void GetNPCsOnScene()
 	{
-		for (var i = 0; i < NPCsNames.Length; i++)
+		for (var i = 0; i < NPCsNames.Count; i++)
 		{
 			string npcName = NPCsNames[i];
 			Node2D npcNode2D = Level.GetNode<Node2D>(npcName);
@@ -93,13 +97,16 @@ public partial class Main : Node
 	// TODO: Class for this type of methods
 	public void LoadNPCDialogs(Node2D npcNode2D)
 	{
-		Dialog[] dialogs = JsonHelper.Parse(npcNode2D.Name);
-
-		for (int i = 0; i < dialogs.Length; i++)
+		if (npcNode2D != null)
 		{
-			Dialog dialog = dialogs[i];
-			dialog.character = npcNode2D.Name;
-			LevelDialogs = LevelDialogs.Append(dialog).ToArray();
+			Dialog[] dialogs = JsonHelper.Parse(npcNode2D.Name);
+
+			for (int i = 0; i < dialogs.Length; i++)
+			{
+				Dialog dialog = dialogs[i];
+				dialog.character = npcNode2D.Name;
+				LevelDialogs = LevelDialogs.Append(dialog).ToArray();
+			}
 		}
 	}
 
@@ -217,15 +224,13 @@ public partial class Main : Node
 		return null;
 	}
 
-	public void RemoveCharactersOfScene() 
+	public void RemoveCharactersOfScene()
 	{
 		for (int i = 0; i < CharactersOnScene.Length; i++)
 		{
 			var character = CharactersOnScene[i];
 			RemoveChild(character);
 		}
-
-		RemoveChild(Player);
 	}
 
 	public void OnPlayerDialogSkip()
@@ -287,17 +292,38 @@ public partial class Main : Node
 	public void OnPlayerOutOfScreen()
 	{
 		// Reset everything
-		LevelDialogs = Array.Empty<Dialog>();
+		Array.Clear(LevelDialogs);
 		DialogOrder = 0;
 		FirstDialogShowed = false;
-		NPCsNames = new string[] { "Grawg" };
 		CharactersOnScene = Array.Empty<Node2D>();
+		NPCsNames.Clear();
 
 		RemoveCharactersOfScene();
 		RemoveChild(Level);
 
 		LevelScene = ResourceLoader.Load<PackedScene>("res://levels/level1.tscn");
+
+		BuildNewLevel();
+	}
+
+	public void BuildNewLevel()
+	{
+		// Render current level
 		InstantiateLevel(LevelScene);
+
+		// Get all NPCs on scene
+		GetNPCsOnScene();
+
+		SetPlayerInitialPosition();
+
+		// Set NPCs on scene position and dialogs
+		SetNPCsOnScene();
+	}
+
+	public void SetPlayerInitialPosition()
+	{
+		Marker2D playerPositionMarker = GetNode<Marker2D>("PlayerPosition"); 
+		Player.Position = new Vector2(playerPositionMarker.Position.X, playerPositionMarker.Position.Y);
 	}
 
 	public void PlayerCollision(Node2D npcNode2D)
