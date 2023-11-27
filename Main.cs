@@ -4,10 +4,11 @@ using System.Linq;
 
 public partial class Main : Node
 {
-	[Export]
 	public PackedScene LevelScene { get; set; }
 
 	public Node Level;
+
+	public Player Player;
 
 	public Dialog[] LevelDialogs = Array.Empty<Dialog>();
 	public int DialogOrder = 0;
@@ -19,6 +20,8 @@ public partial class Main : Node
 
 	public override void _Ready()
 	{
+		// First Scene is Introduction
+		LevelScene = ResourceLoader.Load<PackedScene>("res://levels/Introduction.tscn");
 		// Connect signal to detect player / NPC collision
 		var signals = GetNode<Signals>("/root/Signals");
 		signals.OnPlayerCollision += PlayerCollision;
@@ -65,8 +68,7 @@ public partial class Main : Node
 		}
 
 		Player player = GetNode<Player>("Player");
-
-		CharactersOnScene = CharactersOnScene.Append(player).ToArray();
+		Player = player;
 	}
 
 	public void SetNPCsOnScene()
@@ -75,15 +77,11 @@ public partial class Main : Node
 		{
 			Node character = CharactersOnScene[i];
 
-			if (character.Name == "Player")
-			{
-				LoadNPCDialogs(character as Node2D);
-				continue;
-			}
-
 			SetNPCPosition(character as Node2D);
 			LoadNPCDialogs(character as Node2D);
 		}
+
+		LoadNPCDialogs(Player);
 	}
 
 	public static void SetNPCPosition(Node2D npcNode2D)
@@ -145,10 +143,6 @@ public partial class Main : Node
 
 	public void ShowDialog()
 	{
-		// if (DialogsEndend())
-		// {
-		// 	return;
-		// }
 		Dialog currentDialog = GetCurrentDialog();
 
 		if (currentDialog == null)
@@ -223,6 +217,17 @@ public partial class Main : Node
 		return null;
 	}
 
+	public void RemoveCharactersOfScene() 
+	{
+		for (int i = 0; i < CharactersOnScene.Length; i++)
+		{
+			var character = CharactersOnScene[i];
+			RemoveChild(character);
+		}
+
+		RemoveChild(Player);
+	}
+
 	public void OnPlayerDialogSkip()
 	{
 		Player player = GetNode<Player>("Player");
@@ -277,6 +282,22 @@ public partial class Main : Node
 			DialogOrder++;
 			ShowDialog();
 		}
+	}
+
+	public void OnPlayerOutOfScreen()
+	{
+		// Reset everything
+		LevelDialogs = Array.Empty<Dialog>();
+		DialogOrder = 0;
+		FirstDialogShowed = false;
+		NPCsNames = new string[] { "Grawg" };
+		CharactersOnScene = Array.Empty<Node2D>();
+
+		RemoveCharactersOfScene();
+		RemoveChild(Level);
+
+		LevelScene = ResourceLoader.Load<PackedScene>("res://levels/level1.tscn");
+		InstantiateLevel(LevelScene);
 	}
 
 	public void PlayerCollision(Node2D npcNode2D)

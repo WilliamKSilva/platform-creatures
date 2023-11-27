@@ -446,8 +446,6 @@ position = Vector2(0, -4.45)
 sprite_frames = SubResource("SpriteFrames_4pyd1")
 animation = &"player_stand"
 
-[node name="Camera" type="Camera2D" parent="."]
-
 [node name="Dialog" type="Control" parent="."]
 visible = false
 layout_mode = 3

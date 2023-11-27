@@ -32,6 +32,11 @@ public partial class Player : CharacterBody2D
 	{
 		Vector2 velocity = Vector2.Zero;
 
+		if (IsOutOfScreen())
+		{
+			EmitSignal(SignalName.OnOutOfScreen);
+		}
+
 		if (InDialog)
 		{
 			return;
@@ -63,6 +68,15 @@ public partial class Player : CharacterBody2D
 		MoveAndSlide();
 	}
 
+	public bool IsOutOfScreen() 
+	{
+		return Position.X > 1920;
+	}
+
 	[Signal]
 	public delegate void OnDialogSkipEventHandler(Node2D npcNode2D);
+
+	[Signal]
+	public delegate void OnOutOfScreenEventHandler();
+
 }
