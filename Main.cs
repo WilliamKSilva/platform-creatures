@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+// TODO: Break all Main methods on Classes
+// TODO: Start the level1 structure with enemies
+
 public partial class Main : Node
 {
 	public PackedScene LevelScene { get; set; }
@@ -11,8 +14,7 @@ public partial class Main : Node
 
 	public Player Player;
 
-	public Dialog[] LevelDialogs = Array.Empty<Dialog>();
-	public int DialogOrder = 0;
+	public LevelDialogs LevelDialogs = new LevelDialogs(); 
 
 	public bool FirstDialogShowed = false;
 
@@ -77,80 +79,25 @@ public partial class Main : Node
 
 	public void SetNPCsOnScene()
 	{
+		Dialog[] dialogs;
+
 		for (var i = 0; i < CharactersOnScene.Length; i++)
 		{
-			Node character = CharactersOnScene[i];
+			Node2D character = CharactersOnScene[i];
+			NPC.SetPosition(character);
+			dialogs = NPC.LoadDialogs(character, LevelDialogs.dialogs);
 
-			SetNPCPosition(character as Node2D);
-			LoadNPCDialogs(character as Node2D);
+			LevelDialogs.dialogs = dialogs;
 		}
 
-		LoadNPCDialogs(Player);
-	}
+		dialogs = NPC.LoadDialogs(Player, LevelDialogs.dialogs);
 
-	public static void SetNPCPosition(Node2D npcNode2D)
-	{
-		Marker2D positionNode = npcNode2D.GetNode<Marker2D>("Position");
-		npcNode2D.Position = new Vector2(positionNode.Position.X, positionNode.Position.Y);
-	}
-
-	// TODO: Class for this type of methods
-	public void LoadNPCDialogs(Node2D npcNode2D)
-	{
-		if (npcNode2D != null)
-		{
-			Dialog[] dialogs = JsonHelper.Parse(npcNode2D.Name);
-
-			for (int i = 0; i < dialogs.Length; i++)
-			{
-				Dialog dialog = dialogs[i];
-				dialog.character = npcNode2D.Name;
-				LevelDialogs = LevelDialogs.Append(dialog).ToArray();
-			}
-		}
-	}
-
-	public Dialog GetCurrentDialog()
-	{
-		for (int i = 0; i < LevelDialogs.Length; i++)
-		{
-			Dialog dialog = LevelDialogs[i];
-
-			if (dialog == null)
-			{
-				return null;
-			}
-
-			if (dialog.order == DialogOrder)
-			{
-				return dialog;
-			}
-		}
-
-		return null;
-	}
-
-	public Dialog GetLastDialog()
-	{
-		Dialog lastDialog = LevelDialogs[0];
-
-		for (int i = 0; i < LevelDialogs.Length; i++)
-		{
-			Dialog currentDialog = LevelDialogs[i];
-
-			if (currentDialog.order > lastDialog.order)
-			{
-				lastDialog = currentDialog;
-				continue;
-			}
-		}
-
-		return lastDialog;
+		LevelDialogs.dialogs = dialogs;
 	}
 
 	public void ShowDialog()
 	{
-		Dialog currentDialog = GetCurrentDialog();
+		Dialog currentDialog = LevelDialogs.GetCurrent();
 
 		if (currentDialog == null)
 		{
@@ -188,7 +135,7 @@ public partial class Main : Node
 		Control dialogBox = npc.GetNode<Control>("Dialog");
 		dialogBox.Visible = true;
 
-		Dialog dialog = GetCurrentDialog();
+		Dialog dialog = LevelDialogs.GetCurrent();
 
 		if (dialog == null)
 		{
@@ -199,13 +146,6 @@ public partial class Main : Node
 		dialogNode.Text = dialog.text;
 
 		FirstDialogShowed = true;
-	}
-
-	public bool DialogsEnded()
-	{
-		bool lastDialogDisplayed = GetLastDialog().order == DialogOrder;
-
-		return lastDialogDisplayed;
 	}
 
 	// TODO: Maybe make an class for this type of methods
@@ -237,9 +177,9 @@ public partial class Main : Node
 	{
 		Player player = GetNode<Player>("Player");
 
-		if (DialogsEnded() && player.InDialog)
+		if (LevelDialogs.IsEnded() && player.InDialog)
 		{
-			Dialog lastDialogDisplayed = GetCurrentDialog();
+			Dialog lastDialogDisplayed = LevelDialogs.GetCurrent();
 
 			if (lastDialogDisplayed.character == "Player")
 			{
@@ -257,7 +197,7 @@ public partial class Main : Node
 			player.InDialog = false;
 
 			// After the Dialog ends turn the NPC collision of so the player can continue
-			Dialog lastDialog = GetLastDialog();
+			Dialog lastDialog = LevelDialogs.GetLast();
 			// TODO: make an function to Get the respective NPC by name
 			Node2D node2D = Level.GetNode<Node2D>(lastDialog.character);
 			NPC npcNode = node2D.GetNode<NPC>("NPC");
@@ -270,7 +210,7 @@ public partial class Main : Node
 
 		if (player.InDialog)
 		{
-			Dialog lastDialogDisplayed = GetCurrentDialog();
+			Dialog lastDialogDisplayed = LevelDialogs.GetCurrent();
 			if (lastDialogDisplayed.character == "Player")
 			{
 				Control dialogBox = player.GetNode<Control>("Dialog");
@@ -284,7 +224,7 @@ public partial class Main : Node
 				dialogBox.Visible = false;
 			}
 
-			DialogOrder++;
+			LevelDialogs.currentOrder++;
 			ShowDialog();
 		}
 	}
@@ -292,8 +232,8 @@ public partial class Main : Node
 	public void OnPlayerOutOfScreen()
 	{
 		// Reset everything
-		Array.Clear(LevelDialogs);
-		DialogOrder = 0;
+		Array.Clear(LevelDialogs.dialogs);
+		LevelDialogs.currentOrder = 0;
 		FirstDialogShowed = false;
 		CharactersOnScene = Array.Empty<Node2D>();
 		NPCsNames.Clear();
